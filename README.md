@@ -83,7 +83,7 @@ Everything comes into a few files (and most of them are used for demo).
         // Note that you won't be able to catch events that have been published before you subscribed!
         void Awake()
         {
-            // This is how you suscribe to an event.
+            // This is how you subscribe to an event.
             this.Subscribe<SimpleEvent>();
             // I don't know why it is not recognized by VS for autocompletion, though
             this.Subscribe<ComplexEvent>();
@@ -101,7 +101,7 @@ Everything comes into a few files (and most of them are used for demo).
 
         void Destroy()
         {
-            // It is recommended to unsuscribe to the events you were subscribed to,
+            // It is recommended to unsubscribe to the events you were subscribed to,
             // when you're not able to catch them anymore.
             this.Unsubscribe<SimpleEvent>();
             this.Unsubscribe<ComplexEvent>();
