@@ -20,93 +20,99 @@ Everything comes into a few files (and most of them are used for demo).
 
 <details>
 <summary>Examples of Events :</summary>
-    
-    public class SimpleEvent : Event
+   
+```csharp
+public class SimpleEvent : Event
+{
+    // You can have an event with no parameter at all.
+}
+
+public class ComplexEvent : Event
+{
+    // Or you can have an event which carries parameters across all observers.
+
+    public int myInt { get; private set; }
+    public string myString { get; private set; }
+
+    public ComplexEvent() { }
+
+    public ComplexEvent(int myInt)
     {
-        // You can have an event with no parameter at all.
+        this.myInt = myInt;
     }
 
-    public class ComplexEvent : Event
+    public ComplexEvent(int myInt, string myString)
     {
-        // Or you can have an event which carries parameters across all observers.
-
-        public int myInt { get; private set; }
-        public string myString { get; private set; }
-
-        public ComplexEvent() { }
-
-        public ComplexEvent(int myInt)
-        {
-            this.myInt = myInt;
-        }
-
-        public ComplexEvent(int myInt, string myString)
-        {
-            this.myInt = myInt;
-            this.myString = myString;
-        }
+        this.myInt = myInt;
+        this.myString = myString;
     }
+}
+```
 </details>
 
 <details>
 <summary>Example of a Publisher :</summary>
-    
-    public class ExamplePublisher : MonoBehaviour
+
+```csharp
+public class ExamplePublisher : MonoBehaviour
+{
+
+    void Update()
     {
-
-        void Update()
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                // Any class can publish any event by calling this.Publish.
-                this.Publish<SimpleEvent>();
-            }
+            // Any class can publish any event by calling this.Publish.
+            this.Publish<SimpleEvent>();
+        }
 
-            if (Input.GetKeyDown(KeyCode.Return))
-            {
-                // Here is how you can publish an event with parameters.
-                this.Publish(new ComplexEvent(18, "Hello world!"));
-            }
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            // Here is how you can publish an event with parameters.
+            this.Publish(new ComplexEvent(18, "Hello world!"));
         }
     }
+}
+```
 </details>
 
 <details>
 <summary>Example of an Observer :</summary>
-    
-    public class ExampleObserver : MonoBehaviour,
-    IEventHandler<SimpleEvent>,
-    IEventHandler<ComplexEvent> // You can handle as many events as you want!
+
+```csharp
+public class ExampleObserver : MonoBehaviour,
+IEventHandler<SimpleEvent>,
+IEventHandler<ComplexEvent> // You can handle as many events as you want!
+{
+
+    // We can subscribe in Awake, to be able to respond to events that are published in Start.
+    // Note that you won't be able to catch events that have been published before you subscribed!
+    void Awake()
     {
-
-        // We can subscribe in Awake, to be able to respond to events that are published in Start.
-        // Note that you won't be able to catch events that have been published before you subscribed!
-        void Awake()
-        {
-            // This is how you subscribe to an event.
-            this.Subscribe<SimpleEvent>();
-            // I don't know why it is not recognized by VS for autocompletion, though
-            this.Subscribe<ComplexEvent>();
-        }
-
-        void IEventHandler<SimpleEvent>.Handle(SimpleEvent @event) // This is a possible writing of the method
-        {
-            Debug.Log("SimpleEvent");
-        }
-
-        public void Handle(ComplexEvent @event) // This is another possible writing of the method. You decide!
-        {
-            Debug.Log("ComplexEvent with arguments: " + @event.myInt + " and '" + @event.myString + "'");
-        }
-
-        void Destroy()
-        {
-            // It is recommended to unsubscribe to the events you were subscribed to,
-            // when you're not able to catch them anymore.
-            this.Unsubscribe<SimpleEvent>();
-            this.Unsubscribe<ComplexEvent>();
-        }
+        // This is how you subscribe to an event.
+        this.Subscribe<SimpleEvent>();
+        // I don't know why it is not recognized by VS for autocompletion, though
+        this.Subscribe<ComplexEvent>();
     }
+
+    void IEventHandler<SimpleEvent>.Handle(SimpleEvent @event) // This is a possible writing of the method
+    {
+        Debug.Log("SimpleEvent");
+    }
+
+    public void Handle(ComplexEvent @event) // This is another possible writing of the method. You decide!
+    {
+        Debug.Log("ComplexEvent with arguments: " + @event.myInt + " and '" + @event.myString + "'");
+    }
+
+    void Destroy()
+    {
+        // It is recommended to unsubscribe to the events you were subscribed to,
+        // when you're not able to catch them anymore.
+        this.Unsubscribe<SimpleEvent>();
+        this.Unsubscribe<ComplexEvent>();
+    }
+}
+```
 </details>
 
 ## Screenshots
